@@ -80,5 +80,42 @@ const makeBook = (bookObject) => {
     container.append(textTitle, textAuthor, textYear);
     container.setAttribute('id', `book-${bookObject.id}`);
 
+    if (bookObject.isFinished) {
+        const undoButton = document.createElement('button');
+        undoButton.classList.add('red');
+        undoButton.innerText = "Belum selesai dibaca";
+        undoButton.addEventListener('click', () => {
+            undoBookFromComplete(bookObject.id);
+        });
+
+        const trashButton = document.createElement('button');
+        trashButton.classList.add('green');
+        trashButton.innerText = "Hapus buku";
+        trashButton.addEventListener('click', () => {
+            removeBookFromComplete(bookObject.id);
+        });
+
+        const containerButton = document.createElement('div');
+        containerButton.classList.add('action');
+        containerButton.append(undoButton, trashButton);
+        container.append(containerButton);
+    } else {
+        const checkButton = document.createElement('button');
+        checkButton.classList.add('green');
+        checkButton.innerText = "Selesai dibaca";
+        checkButton.addEventListener('click', () => {
+            addBookToComplete(bookObject.id)
+        });
+        const trashButton = document.createElement('button');
+        trashButton.classList.add('red');
+        trashButton.innerText = "Hapus buku";
+        trashButton.addEventListener('click', () => {
+            removeBookFromComplete(bookObject.id);
+        });
+        const containerButton = document.createElement('div');
+        containerButton.classList.add('action');
+        containerButton.append(checkButton, trashButton);
+        container.append(containerButton);
+    }
     return container;
 }
