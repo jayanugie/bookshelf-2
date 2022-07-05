@@ -82,14 +82,14 @@ const makeBook = (bookObject) => {
 
     if (bookObject.isFinished) {
         const undoButton = document.createElement('button');
-        undoButton.classList.add('red');
+        undoButton.classList.add('green');
         undoButton.innerText = "Belum selesai dibaca";
         undoButton.addEventListener('click', () => {
             undoBookFromComplete(bookObject.id);
         });
 
         const trashButton = document.createElement('button');
-        trashButton.classList.add('green');
+        trashButton.classList.add('red');
         trashButton.innerText = "Hapus buku";
         trashButton.addEventListener('click', () => {
             removeBookFromComplete(bookObject.id);
@@ -118,4 +118,55 @@ const makeBook = (bookObject) => {
         container.append(containerButton);
     }
     return container;
+}
+
+
+
+const addBookToComplete = (bookId) => {
+    const bookTarget = findBook(bookId);
+
+    if(bookTarget == null) return;
+
+    bookTarget.isFinished = true;
+    document.dispatchEvent(new Event(RENDER_EVENT));
+}
+
+
+const findBook = (bookId) => {
+    for (const bookItem of books) {
+        if (bookItem.id === bookId) {
+            return bookItem;
+        }
+    }
+    return null;
+}
+
+
+const removeBookFromComplete = (bookId) => {
+    const bookTarget = findBookIndex(bookId);
+
+    if (bookTarget === -1);
+    
+    books.splice(bookTarget, 1);
+    document.dispatchEvent(new Event(RENDER_EVENT));
+}
+
+
+const undoBookFromComplete = (bookId) => {
+    const bookTarget = findBook(bookId)
+
+    if (bookTarget == null) return;
+
+    bookTarget.isFinished = false;
+    document.dispatchEvent(new Event(RENDER_EVENT));
+}
+
+
+const findBookIndex = (bookId) => {
+    for (const index in books) {
+        if (books[index].id === bookId) {
+            return index;
+        }
+    }
+    return -1;
 }
