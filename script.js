@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         addBook();
     });
+    if (isStorageExist()) {
+        loadDataFromStorage();
+    }
 });
 
 
@@ -40,6 +43,7 @@ const addBook = () => {
     books.push(bookObject);
 
     document.dispatchEvent(new Event (RENDER_EVENT));
+    saveData();
 }
 
 
@@ -130,6 +134,7 @@ const addBookToComplete = (bookId) => {
 
     bookTarget.isFinished = true;
     document.dispatchEvent(new Event(RENDER_EVENT));
+    saveData();
 }
 
 
@@ -150,6 +155,7 @@ const removeBookFromComplete = (bookId) => {
     
     books.splice(bookTarget, 1);
     document.dispatchEvent(new Event(RENDER_EVENT));
+    saveData();
 }
 
 
@@ -160,6 +166,7 @@ const undoBookFromComplete = (bookId) => {
 
     bookTarget.isFinished = false;
     document.dispatchEvent(new Event(RENDER_EVENT));
+    saveData();
 }
 
 
@@ -170,4 +177,41 @@ const findBookIndex = (bookId) => {
         }
     }
     return -1;
+}
+
+
+// STORAGE
+const SAVED_EVENT = 'saved-todo';
+const STORAGE_KEY = 'BOOKSHELF';
+
+const saveData = () => {
+    if (isStorageExist()) {
+        const parsed = JSON.stringify(books);
+        localStorage.setItem(STORAGE_KEY, parsed);
+        document.dispatchEvent(new Event(SAVED_EVENT));
+    }
+}
+
+const isStorageExist = () => {
+    if (typeof (Storage) === undefined) {
+        alert('Browser kamu tidak mendukung local storage');
+        return false;
+    }
+    return true;
+}
+
+document.addEventListener(SAVED_EVENT, () => {
+    console.log(localStorage.getItem(STORAGE_KEY));
+});
+
+const loadDataFromStorage = () => {
+    const serializeData = localStorage.getItem(STORAGE_KEY);
+    let data = JSON.parse(serializeData);
+
+    if (data !== null) {
+        for (const book of data) {
+            books.push(book);
+        }
+    }
+    document.dispatchEvent(new Event(RENDER_EVENT));
 }
