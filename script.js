@@ -215,3 +215,55 @@ const loadDataFromStorage = () => {
     }
     document.dispatchEvent(new Event(RENDER_EVENT));
 }
+
+
+// searchbox
+const searchButton = document.getElementById('searchSubmit');
+const searchValue = document.getElementById('searchBookTitle');
+
+searchButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (localStorage.getItem(STORAGE_KEY) == "") {
+        alert("Tidak ada data buku");
+        return location.reload();
+    } else {
+        const getByTitle = getData().filter(a => a.title == searchValue.value.trim());
+        if (getByTitle.length == 0) {
+            const getByAuthor = getData().filter(a => a.author == searchValue.value.trim());
+            if (getByAuthor.length == 0) {
+                const getByYear = getData().filter(a => a.year == searchValue.value.trim());
+                if (getByYear.length == 0) {
+                    alert("Data yang anda cari tidak ada");
+                    return location.reload();
+                } else {
+                    showSearchResult(getByYear);
+                }
+            } else {
+                showSearchResult(getByAuthor);
+            }
+        } else {
+            showSearchResult(getByTitle);
+        }
+    }
+});
+
+const getData = () => {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+}
+
+const showSearchResult = (books) => {
+    const searchResult = document.getElementById('searchResult');
+    searchResult.innerHTML = "";
+
+    books.forEach(book => {
+        let show = `
+        <article class="book_item">
+            <h3>${book.title}</h3>
+            <p>${book.author}</p>
+            <p>${book.year}</p>
+            <p>${book.isFinished ? 'Sudah dibaca' : 'Belum selesai dibaca'}</p>
+        </article>
+        `
+        searchResult.innerHTML += show;
+    });
+}
