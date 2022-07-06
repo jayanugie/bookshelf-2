@@ -32,9 +32,10 @@ const addBook = () => {
     const inputTitle = document.getElementById('inputBookTitle').value;
     const inputAuthor = document.getElementById('inputBookAuthor').value;
     const inputYear = document.getElementById('inputBookYear').value;
+    const checkBox = document.getElementById('inputBookIsComplete').checked;
 
     const generateID = generateId();
-    const bookObject = generateBookObject(generateID, inputTitle, inputAuthor, inputYear, false);
+    const bookObject = generateBookObject(generateID, inputTitle, inputAuthor, inputYear, checkBox);
 
     books.push(bookObject);
 
